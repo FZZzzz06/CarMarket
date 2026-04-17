@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Used car seller portal — register, log in, or list your vehicle" />
+  <title>Seller Portal — Car Marketplace</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Top Nav ── */
+    .top-nav {
+      background-color: #4169E1;
+      color: white;
+      padding: 18px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .top-nav .logo {
+      font-size: 22px;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+    }
+
+    .top-nav .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .top-nav .nav-links a {
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .top-nav .nav-links a:hover { color: white; text-decoration: underline; }
+
+    .btn-register {
+      background-color: white;
+      color: #4169E1;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-register:hover { background-color: #e6edff; }
+
+    /* ── Hero ── */
+    .hero {
+      background-color: #4169E1;
+      color: white;
+      text-align: center;
+      padding: 64px 20px 56px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      opacity: 0.9;
+      margin-bottom: 30px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-hero {
+      background-color: white;
+      color: #4169E1;
+      border: none;
+      padding: 14px 40px;
+      border-radius: 6px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .btn-hero:hover { background-color: #e6edff; }
+
+    /* ── Stats Bar ── */
+    .stats-bar {
+      background-color: #2c3e50;
+      color: white;
+      padding: 24px 20px;
+    }
+
+    .stats-bar__inner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .stat__number {
+      font-size: 32px;
+      font-weight: 800;
+      color: #4169E1;
+      display: block;
+      line-height: 1;
+    }
+
+    .stat__label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* ── Portal Cards ── */
+    main {
+      flex: 1;
+    }
+
+    .portal-section {
+      max-width: 1000px;
+      margin: 48px auto;
+      padding: 0 20px;
+    }
+
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .portal-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      padding: 36px 24px;
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      border: 2px solid transparent;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+      cursor: pointer;
+    }
+
+    .portal-card:hover {
+      text-decoration: none;
+      border-color: #4169E1;
+      box-shadow: 0 8px 25px rgba(65,105,225,0.15);
+      transform: translateY(-4px);
+    }
+
+    .portal-card__icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .portal-card__icon--register { background: #dce8ff; }
+    .portal-card__icon--login    { background: #d9f0ff; }
+    .portal-card__icon--add      { background: #d9f5e8; }
+
+    .portal-card__title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 0;
+    }
+
+    .portal-card__desc {
+      font-size: 14px;
+      color: #6c757d;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .portal-card__cta {
+      margin-top: auto;
+      font-size: 14px;
+      font-weight: 600;
+      color: #4169E1;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .portal-card__cta::after {
+      content: "→";
+      transition: transform 0.15s;
+    }
+
+    .portal-card:hover .portal-card__cta::after {
+      transform: translateX(4px);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background-color: #2c3e50;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 24px 20px;
+      font-size: 13px;
+    }
+
+    footer a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+    }
+
+    footer a:hover { color: white; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .portal-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .portal-card {
+        padding: 20px;
+        flex-direction: row;
+        text-align: left;
+        gap: 16px;
+      }
+
+      .portal-card__icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+
+      .stats-bar__inner {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .top-nav .nav-links { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Top Navigation ===== -->
+  <header>
+    <nav class="top-nav" role="navigation" aria-label="Main navigation">
+      <a href="code_20260416.html" class="logo">CarMarket</a>
+      <div class="nav-links">
+        <a href="seller-portal.html" aria-current="page">Seller Portal</a>
+        <a href="search page final.html">Browse Cars</a>
+        <a href="#">Help</a>
+        <a href="seller-register.html" class="btn-register">Register Free</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===== Hero ===== -->
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title">Seller Portal</h1>
+      <p>Join hundreds of thousands of sellers. List your vehicle quickly and reach buyers nationwide.</p>
+      <a href="seller-register.html" class="btn-hero">Register for Free</a>
+    </section>
+
+    <!-- ===== Stats ===== -->
+    <section class="stats-bar" aria-label="Platform statistics">
+      <div class="stats-bar__inner">
+        <div class="stat">
+          <span class="stat__number">320,000+</span>
+          <span class="stat__label">Registered Sellers</span>
+        </div>
+        <div class="stat">
+          <span class="stat__number">850,000+</span>
+          <span class="stat__label">Cars Listed</span>
+        </div>
+        <div class="stat">
+          <span class="stat__number">98%</span>
+          <span class="stat__label">Seller Satisfaction</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Portal Cards ===== -->
+    <section class="portal-section" aria-labelledby="portal-section-title">
+      <h2 class="sr-only" id="portal-section-title">Seller Actions</h2>
+
+      <div class="portal-grid" role="list">
+
+        <a
+          href="seller-register.html"
+          class="portal-card"
+          role="listitem"
+          aria-label="Go to seller registration"
+        >
+          <div class="portal-card__icon portal-card__icon--register" aria-hidden="true">📝</div>
+          <div>
+            <p class="portal-card__title">Seller Registration</p>
+            <p class="portal-card__desc" style="margin-top:8px;">
+              Create your seller account, fill in your details,<br />
+              and start listing your cars right away.
+            </p>
+            <span class="portal-card__cta" style="margin-top:16px; display:flex;">Register Now</span>
+          </div>
+        </a>
+
+        <a
+          href="code_20260416.html#login"
+          class="portal-card"
+          role="listitem"
+          aria-label="Go to seller login"
+        >
+          <div class="portal-card__icon portal-card__icon--login" aria-hidden="true">🔐</div>
+          <div>
+            <p class="portal-card__title">Seller Login</p>
+            <p class="portal-card__desc" style="margin-top:8px;">
+              Already have an account? Log in to manage your<br />
+              listings, inquiries, and transaction history.
+            </p>
+            <span class="portal-card__cta" style="margin-top:16px; display:flex;">Login Now</span>
+          </div>
+        </a>
+
+        <a
+          href="add car final.html"
+          class="portal-card"
+          role="listitem"
+          aria-label="Go to add car page"
+        >
+          <div class="portal-card__icon portal-card__icon--add" aria-hidden="true">🚗</div>
+          <div>
+            <p class="portal-card__title">Add Car</p>
+            <p class="portal-card__desc" style="margin-top:8px;">
+              Upload your car details, photos, and price to<br />
+              reach hundreds of thousands of potential buyers.
+            </p>
+            <span class="portal-card__cta" style="margin-top:16px; display:flex;">Post Listing</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Car Marketplace. All rights reserved.</p>
+    <p style="margin-top:8px;">
+      <a href="#">Privacy Policy</a> &nbsp;|&nbsp;
+      <a href="#">Terms of Service</a> &nbsp;|&nbsp;
+      <a href="#">Contact Us</a>
+    </p>
+  </footer>
+
+</body>
+</html>
