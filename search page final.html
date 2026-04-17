@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Trader - Search Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            transition: all 0.3s ease;
+        }
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .top-nav {
+            background-color: #4169E1;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .top-nav .nav-links a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .top-nav .nav-links a:hover { color: white; text-decoration: underline; }
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .search-section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .search-icon-wrapper {
+            position: absolute;
+            right: 25px;
+            top: 25px;
+            z-index: 10;
+        }
+        #search-trigger {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4169E1;
+            padding: 5px;
+            border-radius: 50%;
+        }
+        #search-trigger:hover {
+            background-color: #e6edff;
+        }
+        .search-form {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            margin-top: 10px;
+        }
+        .form-group {
+            flex: 1;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4169E1;
+            box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+        }
+        .btn {
+            background-color: #4169E1;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            background-color: #3057c2;
+        }
+        .results-section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .car-list {
+            list-style: none;
+        }
+        .car-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        .car-img {
+            width: 120px;
+            height: 80px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            font-weight: bold;
+            overflow: hidden;
+        }
+        .car-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .car-details h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .car-details p {
+            color: #6c757d;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .tutorial-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+        .close-tutorial {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+        .tutorial-screen {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 20px;
+            background: #f8f9fa;
+            min-height: 300px;
+        }
+        .cursor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23000"><path d="M0 0l24 12-12 12z"/></svg>') no-repeat;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="page-title">Search Page</div>
+        <div class="nav-links">
+            <a href="code_20260416.html">Home</a>
+            <a href="seller-portal.html">Seller Portal</a>
+            <a href="add car final.html">Add Car</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="search-section">
+            <div class="search-icon-wrapper">
+                <button id="search-trigger" title="View Search Tutorial">🔍</button>
+            </div>
+            <h2>Find Your Car</h2>
+            <p>Search by model and year to find your perfect match.</p>
+            <div class="search-form">
+                <div class="form-group">
+                    <label for="model">Model</label>
+                    <input type="text" id="model" placeholder="e.g. Civic, Corolla">
+                </div>
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <input type="number" id="year" min="1990" max="2025" placeholder="e.g. 2022">
+                </div>
+                <button class="btn" id="manual-search-btn">Search</button>
+            </div>
+        </section>
+
+        <section class="results-section">
+            <div class="section-header">
+                <h2 id="results-heading">Popular Car Models 2025</h2>
+            </div>
+            <ul class="car-list" id="car-results"></ul>
+        </section>
+    </div>
+
+    <div class="tutorial-overlay" id="tutorial-overlay">
+        <div class="cursor" id="tutorial-cursor"></div>
+        <div class="tutorial-content">
+            <span class="close-tutorial" id="close-tutorial">&times;</span>
+            <h2>Search Tutorial</h2>
+            <div class="tutorial-screen" id="tutorial-screen">
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; margin-bottom:5px;">Model</label>
+                    <input type="text" id="tutorial-model" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:4px;" readonly>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; margin-bottom:5px;">Year</label>
+                    <input type="number" id="tutorial-year" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:4px;" readonly>
+                </div>
+                <button class="btn" id="tutorial-search-btn" style="pointer-events:none;">Search</button>
+                <div style="margin-top:20px;">
+                    <h3 id="tutorial-results-heading">Search Results</h3>
+                    <ul id="tutorial-results" style="list-style:none; margin-top:10px;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const searchTrigger = document.getElementById('search-trigger');
+        const tutorialOverlay = document.getElementById('tutorial-overlay');
+        const closeTutorial = document.getElementById('close-tutorial');
+        const tutorialCursor = document.getElementById('tutorial-cursor');
+        const tutorialModel = document.getElementById('tutorial-model');
+        const tutorialYear = document.getElementById('tutorial-year');
+        const tutorialResults = document.getElementById('tutorial-results');
+        const modelInput = document.getElementById('model');
+        const yearInput = document.getElementById('year');
+        const resultsHeading = document.getElementById('results-heading');
+        const carResults = document.getElementById('car-results');
+        const manualSearchBtn = document.getElementById('manual-search-btn');
+
+        // 系统默认车辆库
+        const defaultCarDatabase = [
+            { model: "Civic", year: "2022", color: "Red", location: "Shanghai", price: "$22,000", img: "https://via.placeholder.com/120x80/ff0000/ffffff?text=Civic" },
+            { model: "Corolla", year: "2023", color: "Blue", location: "Guangzhou", price: "$20,000", img: "https://via.placeholder.com/120x80/0000ff/ffffff?text=Corolla" },
+            { model: "Camry", year: "2025", color: "Black", location: "Shenzhen", price: "$29,800", img: "https://via.placeholder.com/120x80/000000/ffffff?text=Camry" },
+            { model: "Model 3", year: "2025", color: "White", location: "Beijing", price: "$38,900", img: "https://via.placeholder.com/120x80/ffffff/000000?text=Model+3" }
+        ];
+
+        // 获取用户上传的车辆（来自 add car）
+        function getUserCars() {
+            return JSON.parse(localStorage.getItem('carDatabaseList')) || [];
+        }
+
+        // 总车库 = 默认 + 用户上传
+        function getAllCars() {
+            return [...defaultCarDatabase, ...getUserCars()];
+        }
+
+        // 页面加载：显示 2025 热门（默认+用户）
+        window.addEventListener('load', () => {
+            const all = getAllCars();
+            const popular = all.filter(car => car.year === "2025");
+            renderCarList(popular);
+        });
+
+        // 渲染车辆
+        function renderCarList(cars) {
+            carResults.innerHTML = '';
+            if (cars.length === 0) {
+                carResults.innerHTML = '<li class="car-item" style="animation:none; opacity:1;"><div class="car-details"><h3>No cars found matching your criteria.</h3></div></li>';
+                return;
+            }
+            cars.forEach((car, index) => {
+                const li = document.createElement('li');
+                li.className = 'car-item';
+                li.style.animation = `fadeInUp 0.5s forwards ${index * 0.1}s`;
+                li.innerHTML = `
+                    <div class="car-img">
+                        <img src="${car.img}" alt="${car.model}">
+                    </div>
+                    <div class="car-details">
+                        <h3>${car.year} ${car.model}</h3>
+                        <p>Colour: ${car.color} | Location: ${car.location} | Price: ${car.price}</p>
+                    </div>
+                `;
+                carResults.appendChild(li);
+            });
+        }
+
+        // 搜索：同时搜默认 + 用户上传
+        manualSearchBtn.addEventListener('click', () => {
+            const searchModel = modelInput.value.trim().toLowerCase();
+            const searchYear = yearInput.value.trim();
+            if (!searchModel) {
+                alert("Please enter a car model!");
+                return;
+            }
+            resultsHeading.textContent = "Search Results";
+            const allCars = getAllCars();
+            const filtered = allCars.filter(car => {
+                const matchModel = car.model.toLowerCase().includes(searchModel);
+                const matchYear = searchYear ? car.year === searchYear : true;
+                return matchModel && matchYear;
+            });
+            renderCarList(filtered);
+        });
+
+        // 教程相关（不动）
+        searchTrigger.addEventListener('click', () => {
+            tutorialOverlay.style.display = 'flex';
+            startTutorialAnimation();
+        });
+        closeTutorial.addEventListener('click', () => {
+            tutorialOverlay.style.display = 'none';
+            resetTutorial();
+        });
+        tutorialOverlay.addEventListener('click', (e) => {
+            if (e.target === tutorialOverlay) {
+                tutorialOverlay.style.display = 'none';
+                resetTutorial();
+            }
+        });
+        function resetTutorial() {
+            tutorialModel.value = '';
+            tutorialYear.value = '';
+            tutorialResults.innerHTML = '';
+            tutorialCursor.style.display = 'none';
+        }
+        function startTutorialAnimation() {
+            const modelInputRect = tutorialModel.getBoundingClientRect();
+            const yearInputRect = tutorialYear.getBoundingClientRect();
+            const searchBtnRect = document.getElementById('tutorial-search-btn').getBoundingClientRect();
+            tutorialCursor.style.display = 'block';
+            setTimeout(() => moveCursor(modelInputRect.left + 10, modelInputRect.top + 10), 500);
+            setTimeout(() => typeText(tutorialModel, "Civic"), 1000);
+            setTimeout(() => moveCursor(yearInputRect.left + 10, yearInputRect.top + 10), 3000);
+            setTimeout(() => typeText(tutorialYear, "2022"), 3500);
+            setTimeout(() => moveCursor(searchBtnRect.left + 20, searchBtnRect.top + 10), 5000);
+            setTimeout(() => clickSearch(), 5500);
+            setTimeout(() => showTutorialResults(), 6000);
+        }
+        function moveCursor(x, y) {
+            tutorialCursor.style.left = `${x}px`;
+            tutorialCursor.style.top = `${y}px`;
+        }
+        function typeText(input, text) {
+            let index = 0;
+            input.value = '';
+            const interval = setInterval(() => {
+                if (index < text.length) {
+                    input.value += text[index];
+                    index++;
+                } else clearInterval(interval);
+            }, 100);
+        }
+        function clickSearch() {
+            const btn = document.getElementById('tutorial-search-btn');
+            btn.style.backgroundColor = '#3057c2';
+            setTimeout(() => btn.style.backgroundColor = '#4169E1', 200);
+        }
+        function showTutorialResults() {
+            const all = getAllCars();
+            const filtered = all.filter(car => car.model === "Civic" && car.year === "2022");
+            tutorialResults.innerHTML = '';
+            filtered.forEach((car, index) => {
+                const li = document.createElement('li');
+                li.style.animation = `fadeInUp 0.5s forwards ${index * 0.1}s`;
+                li.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:15px; padding:10px 0; border-bottom:1px solid #eee;">
+                        <div style="width:80px; height:50px; background:#e9ecef; border-radius:4px; display:flex; align-items:center; justify-content:center;">🚗</div>
+                        <div>
+                            <h4>${car.year} ${car.model}</h4>
+                            <p style="font-size:0.9rem; color:#666;">${car.color} | ${car.location} | ${car.price}</p>
+                        </div>
+                    </div>
+                `;
+                tutorialResults.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>

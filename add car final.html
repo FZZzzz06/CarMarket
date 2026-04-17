@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Trader - Add Car</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .top-nav {
+            background-color: #4169E1;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .top-nav .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .top-nav .nav-links a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .top-nav .nav-links a:hover { color: white; text-decoration: underline; }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .card h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .card p.desc {
+            color: #6c757d;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4169E1;
+            box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+        }
+        input.error-border {
+            border-color: #dc3545 !important;
+        }
+        .tip-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+        .tip-error {
+            color: #dc3545 !important;
+        }
+        .btn {
+            background-color: #4169E1;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #3057c2;
+        }
+        .image-upload {
+            border: 2px dashed #ced4da;
+            border-radius: 6px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .image-upload:hover {
+            border-color: #4169E1;
+            background-color: #f8f9ff;
+        }
+        .image-upload.error {
+            border-color: #dc3545;
+            background-color: #fff5f5;
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        /* 弹窗样式 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .modal-content h3 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        .modal-content p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .modal-btn {
+            background-color: #4169E1;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .modal-btn:hover {
+            background-color: #3057c2;
+        }
+        .error-modal h3 { color: #dc3545; }
+        .success-modal h3 { color: #28a745; }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="page-title">Add Car</div>
+        <div class="nav-links">
+            <a href="code_20260416.html">Home</a>
+            <a href="seller-portal.html">Seller Portal</a>
+            <a href="search page final.html">Search Page</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <h1>List Your Car for Sale</h1>
+            <p class="desc">Fill in the details below to create your car listing</p>
+            <form id="addCarForm">
+                <div class="form-group">
+                    <label for="model">Car Model *</label>
+                    <input type="text" id="model" placeholder="e.g. Civic, Corolla, Model 3">
+                    <div class="tip-text" id="modelTip">Please enter official car model name</div>
+                </div>
+                <div class="form-group">
+                    <label for="year">Year *</label>
+                    <input type="text" id="year" placeholder="e.g. 2022">
+                    <div class="tip-text" id="yearTip">Year range between 1990 - 2025</div>
+                </div>
+                <div class="form-group">
+                    <label for="color">Color *</label>
+                    <input type="text" id="color" placeholder="e.g. White, Black, Red">
+                    <div class="tip-text" id="colorTip">White, Black, Red, Blue, Silver, Gray, Green</div>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location *</label>
+                    <input type="text" id="location" placeholder="e.g. Beijing, Shanghai">
+                    <div class="tip-text" id="locationTip">Beijing, Shanghai, Guangzhou, Shenzhen</div>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price *</label>
+                    <input type="text" id="price" placeholder="e.g. 25000">
+                    <div class="tip-text" id="priceTip">Numbers only, positive amount</div>
+                </div>
+                <div class="form-group">
+                    <label>Car Image *</label>
+                    <div class="image-upload" id="imageUploadArea">
+                        <p>Click to upload picture</p>
+                        <input type="file" id="carImage" accept="image/*" style="display: none;">
+                    </div>
+                    <img id="imagePreview" alt="Image Preview">
+                </div>
+                <button type="submit" class="btn">Publish Car Listing</button>
+            </form>
+        </div>
+    </div>
+    <!-- 错误弹窗 -->
+    <div id="errorModal" class="modal-overlay">
+        <div class="modal-content error-modal">
+            <div class="modal-icon">⚠️</div>
+            <h3>Incomplete or Incorrect Information</h3>
+            <p>Please check all fields and make sure everything is filled out correctly before submitting.</p>
+            <button class="modal-btn" onclick="closeErrorModal()">Got it, let me fix</button>
+        </div>
+    </div>
+    <!-- 成功弹窗 -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content success-modal">
+            <div class="modal-icon">✅</div>
+            <h3>Successfully Published!</h3>
+            <p>Your car listing has been added to the marketplace.</p>
+            <button class="modal-btn" onclick="closeSuccessModal()">Continue</button>
+        </div>
+    </div>
+    <script>
+        const validColors = ['white', 'black', 'red', 'blue', 'silver', 'gray', 'green', 'yellow', 'brown', 'orange'];
+        const validLocations = ['beijing', 'shanghai', 'guangzhou', 'shenzhen', 'hangzhou', 'chengdu'];
+        const form = document.getElementById('addCarForm');
+        const modelInput = document.getElementById('model');
+        const yearInput = document.getElementById('year');
+        const colorInput = document.getElementById('color');
+        const locationInput = document.getElementById('location');
+        const priceInput = document.getElementById('price');
+        const modelTip = document.getElementById('modelTip');
+        const yearTip = document.getElementById('yearTip');
+        const colorTip = document.getElementById('colorTip');
+        const locationTip = document.getElementById('locationTip');
+        const priceTip = document.getElementById('priceTip');
+        const carImageInput = document.getElementById('carImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const uploadArea = document.getElementById('imageUploadArea');
+        const defaultTips = {
+            model: 'Please enter official car model name (min 2 characters)',
+            year: 'Year range between 1990 - 2025',
+            color: 'White, Black, Red, Blue, Silver, Gray, Green',
+            location: 'Beijing, Shanghai, Guangzhou, Shenzhen',
+            price: 'Numbers only, positive amount'
+        };
+        // 弹窗函数
+        function showErrorModal() {
+            document.getElementById('errorModal').style.display = 'flex';
+        }
+        function closeErrorModal() {
+            document.getElementById('errorModal').style.display = 'none';
+        }
+        function showSuccessModal() {
+            document.getElementById('successModal').style.display = 'flex';
+        }
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+            form.reset();
+imagePreview.style.display = 'none';
+            imagePreview.src = '';
+            uploadArea.classList.remove('error');
+            carImageInput.value = '';
+            // 清除所有错误样式
+            [modelInput, yearInput, colorInput, locationInput, priceInput].forEach(inp => {
+                inp.classList.remove('error-border');
+            });
+            [modelTip, yearTip, colorTip, locationTip, priceTip].forEach(tip => {
+                tip.classList.remove('tip-error');
+            });
+            modelTip.textContent = defaultTips.model;
+            yearTip.textContent = defaultTips.year;
+            colorTip.textContent = defaultTips.color;
+            locationTip.textContent = defaultTips.location;
+            priceTip.textContent = defaultTips.price;
+        }
+        // 图片上传预览
+        uploadArea.addEventListener('click', () => carImageInput.click());
+        carImageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+imagePreview.style.display = 'block';
+                    uploadArea.classList.remove('error');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        // 校验函数
+        function validateModel() {
+            const val = modelInput.value.trim();
+            const isValid = val.length >= 2;
+            if (isValid) {
+                modelInput.classList.remove('error-border');
+                modelTip.classList.remove('tip-error');
+                modelTip.textContent = defaultTips.model;
+            } else {
+                modelInput.classList.add('error-border');
+                modelTip.classList.add('tip-error');
+                modelTip.textContent = '❌ Model name must be at least 2 characters';
+            }
+            return isValid;
+        }
+        function validateYear() {
+            const val = yearInput.value.trim();
+            const yearNum = Number(val);
+            let isValid = false;
+            if (val === '') {
+                yearTip.textContent = '❌ Year is required';
+            } else if (isNaN(yearNum)) {
+                yearTip.textContent = '❌ Please enter a valid number';
+            } else if (yearNum < 1990 || yearNum > 2025) {
+                yearTip.textContent = '❌ Year must be between 1990 and 2025';
+            } else {
+                isValid = true;
+                yearTip.textContent = defaultTips.year;
+            }
+            if (isValid) {
+                yearInput.classList.remove('error-border');
+                yearTip.classList.remove('tip-error');
+            } else {
+                yearInput.classList.add('error-border');
+                yearTip.classList.add('tip-error');
+            }
+            return isValid;
+        }
+        function validateColor() {
+            const val = colorInput.value.trim().toLowerCase();
+            const isValid = validColors.includes(val);
+            if (isValid) {
+                colorInput.classList.remove('error-border');
+                colorTip.classList.remove('tip-error');
+                colorTip.textContent = defaultTips.color;
+            } else {
+                colorInput.classList.add('error-border');
+                colorTip.classList.add('tip-error');
+                colorTip.textContent = '❌ Please enter a valid color';
+            }
+            return isValid;
+        }
+        function validateLocation() {
+            const val = locationInput.value.trim().toLowerCase();
+            const isValid = validLocations.includes(val);
+            if (isValid) {
+                locationInput.classList.remove('error-border');
+                locationTip.classList.remove('tip-error');
+                locationTip.textContent = defaultTips.location;
+            } else {
+                locationInput.classList.add('error-border');
+                locationTip.classList.add('tip-error');
+                locationTip.textContent = '❌ Please enter a valid city';
+            }
+            return isValid;
+        }
+        function validatePrice() {
+            const val = priceInput.value.trim();
+            const priceNum = Number(val);
+            let isValid = false;
+            if (val === '') {
+                priceTip.textContent = '❌ Price is required';
+            } else if (isNaN(priceNum) || priceNum <= 0) {
+                priceTip.textContent = '❌ Please enter a positive number';
+            } else {
+                isValid = true;
+                priceInput.value = priceNum.toFixed(2);
+                priceTip.textContent = defaultTips.price;
+            }
+            if (isValid) {
+                priceInput.classList.remove('error-border');
+                priceTip.classList.remove('tip-error');
+            } else {
+                priceInput.classList.add('error-border');
+                priceTip.classList.add('tip-error');
+            }
+            return isValid;
+        }
+        function validateImage() {
+            const hasImage = imagePreview.style.display === 'block' && imagePreview.src;
+            if (!hasImage) {
+                uploadArea.classList.add('error');
+            } else {
+                uploadArea.classList.remove('error');
+            }
+            return hasImage;
+        }
+        // 绑定失焦事件
+        modelInput.addEventListener('blur', validateModel);
+        yearInput.addEventListener('blur', validateYear);
+        colorInput.addEventListener('blur', validateColor);
+        locationInput.addEventListener('blur', validateLocation);
+        priceInput.addEventListener('blur', validatePrice);
+        // 表单提交
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const isModelOk = validateModel();
+            const isYearOk = validateYear();
+            const isColorOk = validateColor();
+            const isLocationOk = validateLocation();
+            const isPriceOk = validatePrice();
+            const isImageOk = validateImage();
+            if (!isModelOk || !isYearOk || !isColorOk || !isLocationOk || !isPriceOk || !isImageOk) {
+                showErrorModal();
+                return;
+            }
+            // 保存数据
+            const newCar = {
+                model: modelInput.value.trim(),
+                year: yearInput.value.trim(),
+                color: colorInput.value.trim(),
+                location: locationInput.value.trim(),
+                price: `$${priceInput.value}`,
+                img: imagePreview.src
+            };
+            let carList = JSON.parse(localStorage.getItem('carDatabaseList')) || [];
+            carList.push(newCar);
+            localStorage.setItem('carDatabaseList', JSON.stringify(carList));
+            showSuccessModal();
+        });
+        // 点击弹窗背景关闭
+        window.onclick = function(event) {
+            const errorModal = document.getElementById('errorModal');
+            const successModal = document.getElementById('successModal');
+            if (event.target === errorModal) closeErrorModal();
+            if (event.target === successModal) closeSuccessModal();
+        }
+    </script>
+</body>
+</html>
