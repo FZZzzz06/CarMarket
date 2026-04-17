@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seller Registration — Car Marketplace</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Top Nav ── */
+    nav.top-nav {
+      background-color: #4169E1;
+      color: white;
+      padding: 18px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    nav.top-nav .logo {
+      font-size: 20px;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+    }
+
+    nav.top-nav .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    nav.top-nav .nav-links a {
+      color: rgba(255,255,255,0.9);
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    nav.top-nav .nav-links a:hover { color: white; text-decoration: underline; }
+
+    /* ── Main / Card ── */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .box {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 460px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .box h1 {
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 4px;
+      color: #2c3e50;
+    }
+
+    .box .sub {
+      font-size: 13px;
+      color: #999;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    /* ── Form Elements ── */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #34495e;
+    }
+
+    .req { color: #dc3545; margin-left: 2px; }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"] {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #4169E1;
+      box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+    }
+
+    input.error {
+      border-color: #dc3545;
+    }
+
+    input.ok {
+      border-color: #28a745;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #999;
+      margin-top: 3px;
+    }
+
+    .err-msg {
+      font-size: 12px;
+      color: #dc3545;
+      margin-top: 3px;
+      display: none;
+    }
+
+    .err-msg.show { display: block; }
+
+    /* ── Password Strength ── */
+    .strength {
+      height: 3px;
+      background: #eee;
+      border-radius: 3px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .strength.show { display: block; }
+
+    .strength-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.2s;
+    }
+
+    .strength-text {
+      font-size: 11px;
+      margin-top: 2px;
+      display: none;
+    }
+
+    .strength-text.show { display: block; }
+
+    /* ── Terms ── */
+    .terms {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .terms input[type="checkbox"] {
+      margin-top: 2px;
+      cursor: pointer;
+      width: auto;
+    }
+
+    .terms a { color: #4169E1; }
+
+    /* ── Submit Button ── */
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #4169E1;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover { background-color: #3057c2; }
+
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .tip {
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+      margin-top: 14px;
+    }
+
+    .tip a { color: #4169E1; }
+
+    /* ── Success Modal ── */
+    .mask {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      align-items: center;
+      justify-content: center;
+      z-index: 99;
+    }
+
+    .mask.show { display: flex; }
+
+    .modal {
+      background: white;
+      border-radius: 8px;
+      padding: 40px 32px;
+      text-align: center;
+      max-width: 340px;
+      width: 90%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .modal .icon { font-size: 3rem; margin-bottom: 12px; }
+
+    .modal h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #28a745;
+    }
+
+    .modal p {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    .modal .btn {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      padding: 10px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background-color: #2c3e50;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 16px 20px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav" role="navigation" aria-label="Main navigation">
+    <a href="code_20260416.html" class="logo">CarMarket</a>
+    <div class="nav-links">
+      <a href="seller-portal.html">Seller Portal</a>
+      <a href="#">Help</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="box">
+      <h1>Seller Registration</h1>
+      <p class="sub">Fill in your details to register for free</p>
+
+      <form id="regForm" novalidate>
+
+        <div class="form-group">
+          <label for="fullName">Full Name<span class="req">*</span></label>
+          <input type="text" id="fullName" placeholder="Enter your full name" maxlength="50" />
+          <div class="err-msg" id="e-fullName"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address<span class="req">*</span></label>
+          <input type="text" id="address" placeholder="Province / City / Street address" maxlength="200" />
+          <div class="err-msg" id="e-address"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number<span class="req">*</span></label>
+          <input type="tel" id="phone" placeholder="1XXXXXXXXXX" maxlength="11" inputmode="numeric" />
+          <div class="hint">Mobile number starting with 1, 11 digits</div>
+          <div class="err-msg" id="e-phone"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email<span class="req">*</span></label>
+          <input type="email" id="email" placeholder="example@mail.com" maxlength="100" />
+          <div class="hint">Must contain @ and end with .com or .cn</div>
+          <div class="err-msg" id="e-email"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="username">Username<span class="req">*</span></label>
+          <input type="text" id="username" placeholder="At least 6 characters, letters and numbers only" maxlength="30" />
+          <div class="hint">6–30 characters, letters and numbers only</div>
+          <div class="err-msg" id="e-username"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password<span class="req">*</span></label>
+          <input type="password" id="password" placeholder="At least 6 characters, letters and numbers only" maxlength="30" />
+          <div class="hint">6–30 characters, letters and numbers only</div>
+          <div class="err-msg" id="e-password"></div>
+          <div class="strength" id="sBar"><div class="strength-fill" id="sFill"></div></div>
+          <div class="strength-text" id="sText"></div>
+        </div>
+
+        <div class="terms">
+          <input type="checkbox" id="agree" />
+          <label for="agree">I have read and agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+        </div>
+        <div class="err-msg" id="e-agree" style="margin-bottom:12px;"></div>
+
+        <button type="submit" id="submitBtn" class="btn">Register Now</button>
+      </form>
+
+      <div class="tip">Already have an account? <a href="code_20260416.html#login">Login here</a></div>
+    </div>
+  </main>
+
+  <footer>&copy; 2026 Car Marketplace</footer>
+
+  <div class="mask" id="mask">
+    <div class="modal">
+      <div class="icon">✅</div>
+      <h2>Registration Successful</h2>
+      <p>Your account has been created. You can now log in and post your vehicles.</p>
+      <a href="seller-portal.html" class="btn">Back to Seller Portal</a>
+    </div>
+  </div>
+
+  <script>
+    "use strict";
+
+    const REGEX = {
+      fullName: /^[\u4e00-\u9fa5a-zA-Z\s.·]{1,50}$/,
+      phone:    /^1[3-9]\d{9}$/,
+      email:    /^[a-zA-Z0-9_.+-]{1,50}@[a-zA-Z0-9.-]+\.(com|cn)$/i,
+      username: /^[a-zA-Z0-9]{6,30}$/,
+      password: /^[a-zA-Z0-9]{6,30}$/,
+    };
+
+    function g(id) { return document.getElementById(id); }
+
+    function setErr(inputId, errId, msg) {
+      const inp = g(inputId), err = g(errId);
+      if (msg) {
+        inp.classList.add("error"); inp.classList.remove("ok");
+        err.textContent = msg; err.classList.add("show");
+        return false;
+      }
+      inp.classList.remove("error"); inp.classList.add("ok");
+      err.textContent = ""; err.classList.remove("show");
+      return true;
+    }
+
+    function chkFullName() {
+      const v = g("fullName").value.trim();
+      if (!v) return setErr("fullName", "e-fullName", "Full name is required");
+      if (!REGEX.fullName.test(v)) return setErr("fullName", "e-fullName", "Invalid name format");
+      return setErr("fullName", "e-fullName", "");
+    }
+
+    function chkAddress() {
+      const v = g("address").value.trim();
+      if (!v) return setErr("address", "e-address", "Address is required");
+      if (v.length < 5) return setErr("address", "e-address", "Address is too short, please provide more detail");
+      return setErr("address", "e-address", "");
+    }
+
+    function chkPhone() {
+      const v = g("phone").value.trim();
+      if (!v) return setErr("phone", "e-phone", "Phone number is required");
+      if (!REGEX.phone.test(v)) return setErr("phone", "e-phone", "Please enter a valid mobile number");
+      return setErr("phone", "e-phone", "");
+    }
+
+    function chkEmail() {
+      const v = g("email").value.trim();
+      if (!v) return setErr("email", "e-email", "Email is required");
+      if (!REGEX.email.test(v)) return setErr("email", "e-email", "Email must contain @ and end with .com or .cn");
+      return setErr("email", "e-email", "");
+    }
+
+    function chkUsername() {
+      const v = g("username").value.trim();
+      if (!v) return setErr("username", "e-username", "Username is required");
+      if (!REGEX.username.test(v)) {
+        return setErr("username", "e-username", v.length < 6 ? "Username must be at least 6 characters" : "Only letters and numbers are allowed");
+      }
+      return setErr("username", "e-username", "");
+    }
+
+    function chkPassword() {
+      const v = g("password").value;
+      const bar = g("sBar"), fill = g("sFill"), text = g("sText");
+      if (!v) {
+        bar.classList.remove("show"); text.classList.remove("show");
+        return setErr("password", "e-password", "Password is required");
+      }
+      if (!REGEX.password.test(v)) {
+        bar.classList.remove("show"); text.classList.remove("show");
+        return setErr("password", "e-password", v.length < 6 ? "Password must be at least 6 characters" : "Only letters and numbers are allowed");
+      }
+      let score = 1;
+      if (/[a-z]/.test(v) && /[A-Z]/.test(v)) score++;
+      if (/[a-zA-Z]/.test(v) && /\d/.test(v)) score++;
+      const lv = [null,
+        { w: "33%", c: "#e00", t: "Weak" },
+        { w: "66%", c: "#e90", t: "Medium" },
+        { w: "100%", c: "#090", t: "Strong" },
+      ][score];
+      fill.style.width = lv.w; fill.style.background = lv.c;
+      text.textContent = "Password Strength: " + lv.t; text.style.color = lv.c;
+      bar.classList.add("show"); text.classList.add("show");
+      return setErr("password", "e-password", "");
+    }
+
+    function chkAgree() {
+      const err = g("e-agree");
+      if (!g("agree").checked) {
+        err.textContent = "Please agree to the Terms of Service"; err.classList.add("show"); return false;
+      }
+      err.textContent = ""; err.classList.remove("show"); return true;
+    }
+
+    g("fullName").addEventListener("blur", chkFullName);
+    g("address").addEventListener("blur", chkAddress);
+    g("phone").addEventListener("blur", chkPhone);
+    g("email").addEventListener("blur", chkEmail);
+    g("username").addEventListener("blur", chkUsername);
+    g("password").addEventListener("blur", chkPassword);
+    g("password").addEventListener("input", chkPassword);
+    g("agree").addEventListener("change", chkAgree);
+
+    g("phone").addEventListener("input", function () {
+      this.value = this.value.replace(/\D/g, "").slice(0, 11);
+    });
+
+    g("regForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const ok = [chkFullName(), chkAddress(), chkPhone(), chkEmail(),
+                  chkUsername(), chkPassword(), chkAgree()].every(Boolean);
+      if (!ok) {
+        const first = this.querySelector(".error");
+        if (first) { first.focus(); first.scrollIntoView({ block: "center" }); }
+        return;
+      }
+      const btn = g("submitBtn");
+      btn.disabled = true; btn.textContent = "Registering…";
+      setTimeout(function () { g("mask").classList.add("show"); }, 400);
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") g("mask").classList.remove("show");
+    });
+  </script>
+
+</body>
+</html>
